@@ -16,6 +16,9 @@ namespace Gemini
         public int Nonce;
     }
 
+    /// <summary>
+    /// Class to handle storage and retrieval of Gemini API Key pair
+    /// </summary>
     public class Wallet
     {
 
@@ -38,10 +41,11 @@ namespace Gemini
         private static string _filename = "";
 
         /// <summary>
-        /// Current Wallet password
+        /// Current Wallet password. Used for saving new information on application close
         /// </summary>
         private static string _password = "";
 
+       
         public Wallet(string key = "", string secret = "", string url = "", int nonce = 1)
         {
 
@@ -151,6 +155,9 @@ namespace Gemini
         }
     }
 
+    /// <summary>
+    /// Singleton class that provides access to Gemini Private API functions
+    /// </summary>
     public class GeminiClient
     {
         private static GeminiClient instance;
@@ -173,6 +180,10 @@ namespace Gemini
         public delegate void ErrorHandler(string reason, string message);
         public static ErrorHandler Handler;
 
+        /// <summary>
+        /// Delegate function to be called on API errors
+        /// </summary>
+        /// <param name="eh">Delegate function</param>
         public static void InstallErrorHandler(ErrorHandler eh)
         {
             Handler += eh;
@@ -185,6 +196,47 @@ namespace Gemini
             Handler(error.Reason, error.Message);
         }
 
+        /* 
+         * BEGIN PUBLIC API FUNCTIONS
+         */
+
+        /// <summary>
+        /// Get the last ticker price for a cryptocurrency
+        /// </summary>
+        /// <param name="currency">Valid strings can be queryed by /v1/symbols API</param>
+        /// <returns>Last price as a decimal</returns>
+        public static decimal GetLastPrice(string currency)
+        {
+            Requests re = new Requests("https://api.gemini.com/v1/pubticker/" + currency.ToLower());
+            var result = re.Get().Result;
+            if (result.IsSuccessStatusCode)
+                return result.Json<Ticker>().Last;
+            HandleError(result);
+            return 0.0M;
+        }
+
+        /// <summary>
+        /// Get array of valid exchange symbols
+        /// </summary>
+        /// <returns></returns>
+        public string[] GetSymbols()
+        {
+            Requests re = new Requests("https://api.gemini.com/v1/symbols");
+            var result = re.Get().Result;
+            if (result.IsSuccessStatusCode)
+                return result.Json<string[]>();
+            HandleError(result);
+            return null;
+        }
+
+        /*
+         * BEGIN PRIVATE API FUNCTIONS
+         */
+
+        /// <summary>
+        /// Request account balances
+        /// </summary>
+        /// <returns></returns>
         public static BalanceRequest[] GetBalances()
         {
             Requests re = new Requests();
@@ -196,17 +248,13 @@ namespace Gemini
             return null;
         }
 
-        public static decimal GetLastPrice(string currency)
-        {
-            Requests re = new Requests("https://api.gemini.com/v1/pubticker/" + currency.ToLower());
-            var result = re.Get().Result;
-            if (result.IsSuccessStatusCode)
-                return result.Json<Ticker>().Last;
-            HandleError(result);
-            return 0.0M;
-        }
-
-        public static string GetDepositAddress(string currency, string label)
+        /// <summary>
+        /// Generate a new cryptocurrency deposit address
+        /// </summary>
+        /// <param name="currency">Valid currencies: "eth", "btc"</param>
+        /// <param name="label">Optional label for the address</param>
+        /// <returns>New deposit address, encoded as a string</returns>
+        public static string GetDepositAddress(string currency, string label="")
         {
             string request = String.Format("/v1/deposit/{0}/newAddress", currency);
             Requests re = new Requests();
@@ -219,6 +267,11 @@ namespace Gemini
             return null;
         }
 
+        /// <summary>
+        /// Request a new order
+        /// </summary>
+        /// <param name="order">NewOrderRequest to send to the server</param>
+        /// <returns>OrderStatus object</returns>
         public static OrderStatus PlaceOrder(NewOrderRequest order)
         {
             Requests re = new Requests();
@@ -233,6 +286,11 @@ namespace Gemini
             return null;
         }
 
+        /// <summary>
+        /// Retrieve information on an order by it's order ID
+        /// </summary>
+        /// <param name="order_id">Server-side order identifier</param>
+        /// <returns></returns>
         public static OrderStatus GetOrder(int order_id)
         {
             Requests re = new Requests();
@@ -245,6 +303,10 @@ namespace Gemini
             return null;
         }
 
+        /// <summary>
+        /// Get open orders that have been placed with this API Key
+        /// </summary>
+        /// <returns>Array of OrderStatus objects, or NULL on failure</returns>
         public static OrderStatus[] GetOrders()
         {
             Requests re = new Requests();
@@ -257,6 +319,11 @@ namespace Gemini
             return null;
         }
 
+        /// <summary>
+        /// Cancel a specific order by order ID
+        /// </summary>
+        /// <param name="order_id">Server-side order identifier</param>
+        /// <returns></returns>
         public static OrderStatus CancelOrder(int order_id)
         {
             Requests re = new Requests();
@@ -269,6 +336,10 @@ namespace Gemini
             return null;
         }
 
+        /// <summary>
+        /// Cancel all orders created this session
+        /// </summary>
+        /// <returns>Boolean representing command status</returns>
         public static bool CancelSession()
         {
             Requests re = new Requests();
@@ -281,6 +352,10 @@ namespace Gemini
             return false;
         }
 
+        /// <summary>
+        /// Cancel all outstanding orders
+        /// </summary>
+        /// <returns>Boolean representing command status</returns>
         public static bool CancelAll()
         {
             Requests re = new Requests();

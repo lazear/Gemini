@@ -10,11 +10,19 @@ namespace Gemini
 {
     class Time
     {
+        /// <summary>
+        /// UNIX timestamp in seconds
+        /// </summary>
+        /// <returns></returns>
         private static long Timestamp()
         {
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
         }
 
+        /// <summary>
+        /// UNIX timestamp in milliseconds
+        /// </summary>
+        /// <returns></returns>
         private static long TimestampMs()
         {
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
@@ -23,6 +31,12 @@ namespace Gemini
 
     static class RequestsExtensions
     {
+        /// <summary>
+        /// Deserialize an HttpResponseMessage from JSON to <typeparamref name="T"/>
+        /// </summary>
+        /// <typeparam name="T">Class with [DataContract] attribute</typeparam>
+        /// <param name="message">A successfull HttpResponseMessage object</param>
+        /// <returns></returns>
         public static T Json<T>(this HttpResponseMessage message)
         {
             var stream = message.Content.ReadAsStreamAsync();
@@ -30,6 +44,9 @@ namespace Gemini
         }
     }
 
+    /// <summary>
+    /// HttpClient wrapper class for ease-of-use
+    /// </summary>
     public class Requests
     {
         public string Url { get; set; }
@@ -48,6 +65,7 @@ namespace Gemini
             this.Data = "";
             this.ContentType = "text/plain";
         }
+
         private Uri GenerateUri()
         {
             return new Uri(this.Url +
@@ -68,16 +86,29 @@ namespace Gemini
             return request;
         }
 
+        /// <summary>
+        /// Send an HttpRequestMessage that has a valid HttpMethod set
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             return client.SendAsync(request);
         }
 
+        /// <summary>
+        /// Send request as an HTTP GET
+        /// </summary>
+        /// <returns></returns>
         public Task<HttpResponseMessage> Get()
         {
             return SendAsync(GenerateRequest(HttpMethod.Get));
         }
 
+        /// <summary>
+        /// Send request as an HTTP POST
+        /// </summary>
+        /// <returns></returns>
         public Task<HttpResponseMessage> Post()
         {
             return SendAsync(GenerateRequest(HttpMethod.Post));

@@ -51,7 +51,7 @@ namespace Gemini.Contracts
     }
 
     [DataContract]
-    public class Order
+    public class OrderBookEntry
     {
         [DataMember(Name = "price")]
         public float Price;
@@ -63,9 +63,9 @@ namespace Gemini.Contracts
     public class OrderBook
     {
         [DataMember(Name = "bids")]
-        public Order[] Bids;
+        public OrderBookEntry[] Bids;
         [DataMember(Name = "asks")]
-        public Order[] Asks;
+        public OrderBookEntry[] Asks;
     }
 
     [DataContract]

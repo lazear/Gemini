@@ -72,8 +72,6 @@ namespace Gemini
 
                 while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
                     cs.Write(buffer, 0, read);
-                cs.Close();
-                input.Close();
             }
         }
 
@@ -103,8 +101,6 @@ namespace Gemini
 
                 while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
                     output.Write(buffer, 0, read);
-
-                cs.Close();
             }
             output.Seek(0, SeekOrigin.Begin);
             return output;

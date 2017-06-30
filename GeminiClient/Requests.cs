@@ -11,7 +11,7 @@ namespace Gemini
     class Time
     {
         /// <summary>
-        /// UNIX timestamp in seconds
+        /// Epoch timestamp in seconds
         /// </summary>
         /// <returns></returns>
         private static long Timestamp()
@@ -20,7 +20,7 @@ namespace Gemini
         }
 
         /// <summary>
-        /// UNIX timestamp in milliseconds
+        /// Epoch timestamp in milliseconds
         /// </summary>
         /// <returns></returns>
         private static long TimestampMs()
@@ -29,7 +29,7 @@ namespace Gemini
         }
     }
 
-    static class RequestsExtensions
+    public static class RequestsExtensions
     {
         /// <summary>
         /// Deserialize an HttpResponseMessage from JSON to <typeparamref name="T"/>

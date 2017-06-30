@@ -72,6 +72,7 @@ namespace Gemini
 
                 while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
                     cs.Write(buffer, 0, read);
+                cs.FlushFinalBlock();
             }
         }
 

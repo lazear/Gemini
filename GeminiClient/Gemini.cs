@@ -7,12 +7,27 @@ using Gemini.Contracts;
 
 namespace Gemini
 {
+    /// <summary>
+    /// XML schema for wallet file
+    /// </summary>
     [Serializable]
     public class GeminiWallet
     {
+        /// <summary>
+        /// API Url
+        /// </summary>
         public string Url;
+        /// <summary>
+        /// API Key
+        /// </summary>
         public string Key;
+        /// <summary>
+        /// API Secret Key
+        /// </summary>
         public string Secret;
+        /// <summary>
+        /// Keypair associated nonce value
+        /// </summary>
         public int Nonce;
     }
 
@@ -45,7 +60,13 @@ namespace Gemini
         /// </summary>
         private static string _password = "";
 
-       
+        /// <summary>
+        /// Create a new wallet
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="secret"></param>
+        /// <param name="url"></param>
+        /// <param name="nonce"></param>
         public Wallet(string key = "", string secret = "", string url = "", int nonce = 1)
         {
 
@@ -113,14 +134,34 @@ namespace Gemini
         }
 
         /// <summary>
+        /// Increase the Nonce of the wallet.
+        /// </summary>
+        /// <param name="increase"></param>
+        public void IncreaseNonce(int increase)
+        {
+            auth.Nonce += Math.Abs(increase);
+        }
+
+        /// <summary>
         /// Return the public API Key for the current Wallet profile
         /// </summary>
         /// <returns></returns>
         public string Key()
         {
             if (auth == null)
-                return String.Empty;
+                return "No API Keys loaded";
             return auth.Key;
+        }
+
+        /// <summary>
+        /// Return the base API Url
+        /// </summary>
+        /// <returns></returns>
+        public string Url()
+        {
+            if (auth == null)
+                return "https://api.gemini.com";
+            return auth.Url;
         }
 
         /// <summary>
@@ -161,10 +202,16 @@ namespace Gemini
     public class GeminiClient
     {
         private static GeminiClient instance;
-        public static Wallet Wallet = new Wallet();
 
+        /// <summary>
+        /// Container for API Keys, and functions for saving/loading key files
+        /// </summary>
+        public static Wallet Wallet = new Wallet();
         private GeminiClient() { }
 
+        /// <summary>
+        /// Return an instance of the GeminiClient
+        /// </summary>
         public static GeminiClient Instance
         {
             get
@@ -177,8 +224,14 @@ namespace Gemini
             }
         }
 
+        /// <summary>
+        /// This delegate will be called when the GeminiClient encounters a server side error,
+        /// to allow for error handling by the calling application
+        /// </summary>
+        /// <param name="reason"></param>
+        /// <param name="message"></param>
         public delegate void ErrorHandler(string reason, string message);
-        public static ErrorHandler Handler;
+        private static ErrorHandler Handler;
 
         /// <summary>
         /// Delegate function to be called on API errors
@@ -207,7 +260,7 @@ namespace Gemini
         /// <returns>Last price as a decimal</returns>
         public static decimal GetLastPrice(string currency)
         {
-            Requests re = new Requests("https://api.gemini.com/v1/pubticker/" + currency.ToLower());
+            Requests re = new Requests(Wallet.Url() + "/v1/pubticker/" + currency.ToLower());
             var result = re.Get().Result;
             if (result.IsSuccessStatusCode)
                 return result.Json<Ticker>().Last;
@@ -221,7 +274,7 @@ namespace Gemini
         /// <returns></returns>
         public string[] GetSymbols()
         {
-            Requests re = new Requests("https://api.gemini.com/v1/symbols");
+            Requests re = new Requests(Wallet.Url() + "/v1/symbols");
             var result = re.Get().Result;
             if (result.IsSuccessStatusCode)
                 return result.Json<string[]>();

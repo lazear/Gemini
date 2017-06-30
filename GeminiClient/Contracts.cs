@@ -350,6 +350,9 @@ namespace Gemini.Contracts
         public long Timestamp;
     }
 
+    /// <summary>
+    /// Information on past trades
+    /// </summary>
     [DataContract]
     public class PastTrade
     {

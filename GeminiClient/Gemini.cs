@@ -240,7 +240,7 @@ namespace Gemini
         public static BalanceRequest[] GetBalances()
         {
             Requests re = new Requests();
-            Wallet.Authenticate(re, new BalanceRequest { Nonce = 2, Request = "/v1/balances" });
+            Wallet.Authenticate(re, new PrivateRequest { Nonce = 2, Request = "/v1/balances" });
             var result = re.Post().Result;
             if (result.IsSuccessStatusCode)
                 return result.Json<BalanceRequest[]>();
@@ -258,11 +258,35 @@ namespace Gemini
         {
             string request = String.Format("/v1/deposit/{0}/newAddress", currency);
             Requests re = new Requests();
-            Wallet.Authenticate<DepositAddressRequest>(re, new DepositAddressRequest { Label = label, Request = request });
+            Wallet.Authenticate(re, new DepositAddressRequest { Label = label, Request = request });
 
             var result = re.Post().Result;
             if (result.IsSuccessStatusCode)
                 return result.Json<DepositAddress>().Address;
+            HandleError(result);
+            return null;
+        }
+
+        /// <summary>
+        /// Withdraw cryptocurrency funds to a whitelisted address
+        /// </summary>
+        /// <param name="currency">"btc", "eth"</param>
+        /// <param name="address">Cryptocurrency address</param>
+        /// <param name="amount">Amount to withdraw</param>
+        /// <returns></returns>
+        public static string Withdraw(string currency, string address, string amount)
+        {
+            Requests re = new Requests();
+            Wallet.Authenticate(re, new WithdrawalRequest
+            {
+                Request = String.Format("/v1/withdraw/{0}", currency),
+                Address = address,
+                Amount = amount,
+            });
+
+            var result = re.Post().Result;
+            if (result.IsSuccessStatusCode)
+                return result.Json<WithdrawalResponse>().TxHash;
             HandleError(result);
             return null;
         }
@@ -276,7 +300,7 @@ namespace Gemini
         {
             Requests re = new Requests();
             order.Request = "/v1/order/new";
-            Wallet.Authenticate<NewOrderRequest>(re, order);
+            Wallet.Authenticate(re, order);
 
             var status = re.Post().Result;
             if (status.IsSuccessStatusCode)
@@ -294,7 +318,7 @@ namespace Gemini
         public static OrderStatus GetOrder(int order_id)
         {
             Requests re = new Requests();
-            Wallet.Authenticate<OrderStatusRequest>(re, new OrderStatusRequest() { Request = "/v1/order/status", OrderID = order_id });
+            Wallet.Authenticate(re, new OrderStatusRequest() { Request = "/v1/order/status", OrderID = order_id });
 
             var status = re.Post().Result;
             if (status.IsSuccessStatusCode)
@@ -307,14 +331,40 @@ namespace Gemini
         /// Get open orders that have been placed with this API Key
         /// </summary>
         /// <returns>Array of OrderStatus objects, or NULL on failure</returns>
-        public static OrderStatus[] GetOrders()
+        public static OrderStatus[] GetActiveOrders()
         {
             Requests re = new Requests();
-            Wallet.Authenticate<OrderStatusRequest>(re, new OrderStatusRequest() { Request = "/v1/orders" });
+            Wallet.Authenticate(re, new OrderStatusRequest() { Request = "/v1/orders" });
 
             var status = re.Post().Result;
             if (status.IsSuccessStatusCode)
                 return status.Json<OrderStatus[]>();
+            HandleError(status);
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieve trade history. See the Gemini API docs for more information on using
+        /// this function.
+        /// </summary>
+        /// <param name="symbol">The symbol to retrieve trades for</param>
+        /// <param name="number">Optional. The maximum number of trades to return. Default is 50, max is 500.</param>
+        /// <param name="timestamp">Optional. Only return trades after this timestamp.</param>
+        /// <returns></returns>
+        public static PastTrade[] GetPastTrades(string symbol, int number = 50, long timestamp = 0)
+        {
+            Requests re = new Requests();
+            Wallet.Authenticate(re, new PastTradeRequest
+            {
+                Request = "/v1/mytrades",
+                Symbol = symbol,
+                LimitTrades = number,
+                Timestamp = timestamp,
+            });
+
+            var status = re.Post().Result;
+            if (status.IsSuccessStatusCode)
+                return status.Json<PastTrade[]>();
             HandleError(status);
             return null;
         }
@@ -327,7 +377,7 @@ namespace Gemini
         public static OrderStatus CancelOrder(int order_id)
         {
             Requests re = new Requests();
-            Wallet.Authenticate<OrderStatusRequest>(re, new OrderStatusRequest() { Request = "/v1/order/cancel", OrderID = order_id });
+            Wallet.Authenticate(re, new OrderStatusRequest() { Request = "/v1/order/cancel", OrderID = order_id });
 
             var status = re.Post().Result;
             if (status.IsSuccessStatusCode)
@@ -343,7 +393,7 @@ namespace Gemini
         public static bool CancelSession()
         {
             Requests re = new Requests();
-            Wallet.Authenticate<BoolResponse>(re, new BoolResponse { Request = "/v1/order/cancel/session" });
+            Wallet.Authenticate(re, new PrivateRequest { Request = "/v1/order/cancel/session" });
             var res = re.Post().Result;
             if (res.IsSuccessStatusCode)
                 return true;
@@ -359,7 +409,7 @@ namespace Gemini
         public static bool CancelAll()
         {
             Requests re = new Requests();
-            Wallet.Authenticate<BoolResponse>(re, new BoolResponse { Request = "/v1/order/cancel/all" });
+            Wallet.Authenticate(re, new PrivateRequest { Request = "/v1/order/cancel/all" });
 
             var res = re.Post().Result;
             if (res.IsSuccessStatusCode)

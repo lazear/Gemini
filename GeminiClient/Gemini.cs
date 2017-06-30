@@ -337,6 +337,7 @@ namespace Gemini
                 Amount = amount,
             });
 
+
             var result = re.Post().Result;
             if (result.IsSuccessStatusCode)
                 return result.Json<WithdrawalResponse>().TxHash;

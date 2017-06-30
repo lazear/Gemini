@@ -169,14 +169,26 @@ namespace Gemini.Contracts
     [DataContract]
     public class DepositAddress
     {
+        /// <summary>
+        /// Cryptocurrency code: "eth", "btc"
+        /// </summary>
         [DataMember(Name = "currency")]
         public string Currency;
+        /// <summary>
+        /// Cryptocurrency address
+        /// </summary>
         [DataMember(Name = "address")]
         public string Address;
+        /// <summary>
+        /// Optional label for the address
+        /// </summary>
         [DataMember(Name = "label")]
         public string Label;
     }
 
+    /// <summary>
+    /// Format for placing an order request
+    /// </summary>
     [DataContract]
     public class NewOrderRequest : PrivateRequest
     {

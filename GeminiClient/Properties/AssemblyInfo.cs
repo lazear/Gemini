@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Gemini")]
-[assembly: AssemblyDescription("Wrapper Library for Gemini API")]
+[assembly: AssemblyDescription("C# Library for Gemini REST API")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("https://www.pleasehodl.me")]
 [assembly: AssemblyProduct("Gemini")]
-[assembly: AssemblyCopyright("Copyright © Please HODL Me 2017")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Copyright © Michael Lazear 2017")]
+[assembly: AssemblyTrademark("Released under the MIT License")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible

@@ -1,7 +1,7 @@
 # Gemini
 _Open source C# Wrapper Library for the Gemini Cryptocurrency Exchange REST API._
 
-![alt text](https://winklevosscapital.com/wp-content/uploads/2015/01/gemini-logo-2.png "Gemini Logo")
+*Donate 12fj5Stp31SrYjtcN9T1jnXPGKUsEF92KD*
 
 Examples:
 

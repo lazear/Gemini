@@ -8,13 +8,13 @@ using System.Runtime.Serialization.Json;
 
 namespace Gemini
 {
-    class Time
+    public class Time
     {
         /// <summary>
         /// Epoch timestamp in seconds
         /// </summary>
         /// <returns></returns>
-        private static long Timestamp()
+        public static long Timestamp()
         {
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
         }
@@ -23,12 +23,15 @@ namespace Gemini
         /// Epoch timestamp in milliseconds
         /// </summary>
         /// <returns></returns>
-        private static long TimestampMs()
+        public static long TimestampMs()
         {
             return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
         }
     }
 
+    /// <summary>
+    /// Extensions to HttpResponseMessage
+    /// </summary>
     public static class RequestsExtensions
     {
         /// <summary>

@@ -1,7 +1,8 @@
 # Gemini
-Open source C# Wrapper Library for the Gemini Cryptocurrency Exchange REST API.
+### The open source API for the Gemini Exchange
 
-Donate BTC: 12fj5Stp31SrYjtcN9T1jnXPGKUsEF92KD
+*Donate* 12fj5Stp31SrYjtcN9T1jnXPGKUsEF92KD
+
 
 Examples:
 

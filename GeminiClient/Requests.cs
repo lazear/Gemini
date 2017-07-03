@@ -27,12 +27,13 @@ namespace Gemini
 		{
 			return (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
 		}
+
 	}
 
 	/// <summary>
 	/// Extensions to HttpResponseMessage
 	/// </summary>
-	public static class RequestsExtensions
+	public static class Extensions
 	{
 		/// <summary>
 		/// Deserialize an HttpResponseMessage from JSON to <typeparamref name="T"/>
@@ -44,6 +45,23 @@ namespace Gemini
 		{
 			var stream = message.Content.ReadAsStreamAsync();
 			return (T)new DataContractJsonSerializer(typeof(T)).ReadObject(stream.Result);
+		}
+
+		public static T Json<T>(this string message)
+		{
+			var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes(message));
+
+			return (T)new DataContractJsonSerializer(typeof(T)).ReadObject(stream);
+		}
+
+		/// <summary>
+		/// Converts a DateTime object to epoch time
+		/// </summary>
+		/// <param name="dt"></param>
+		/// <returns></returns>
+		public static long ToTimestamp(this DateTime dt)
+		{
+			return (long)(dt - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
 		}
 	}
 
@@ -129,8 +147,8 @@ namespace Gemini
 			}
 
 			HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, url);
-			if (data != String.Empty)
-			request.Content = new StringContent(data, Encoding.UTF8);
+			if (data != null && data != String.Empty)
+				request.Content = new StringContent(data, Encoding.UTF8);
 			if (headers != null)
 			{
 				foreach (KeyValuePair<string, string> p in headers)

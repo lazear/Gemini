@@ -11,9 +11,9 @@ namespace Gemini
 	/// <summary>
 	/// Websocket wrapper class
 	/// </summary>
-	public class Websocket
+	public class Websocket : IDisposable
 	{
-		public int BufferSize = 1024;
+		public int BufferSize = 8192;
 		private ClientWebSocket ws;
 		private string url;
 
@@ -30,7 +30,7 @@ namespace Gemini
 		public Websocket(string url, ReceiveCallback callback, object state = null)
 		{
 			ws = new ClientWebSocket();
-			ws.Options.SetBuffer(1024, 1024);
+			ws.Options.SetBuffer(BufferSize, BufferSize);
 			this.url = url;
 			this.rc += callback;
 			this.state = state;
@@ -49,7 +49,7 @@ namespace Gemini
 			}
 			catch (Exception e)
 			{
-				rc(e.Message, state);
+				rc("Exception", e);
 			}
 			finally
 			{
@@ -74,6 +74,7 @@ namespace Gemini
 				rc?.Invoke(overflow, state);
 				overflow = String.Empty;
 			}
+            rc?.Invoke("Disconnected", null);
 		}
 
 		/// <summary>
@@ -85,5 +86,42 @@ namespace Gemini
 		{
 			ws.Options.SetRequestHeader(key, value);
 		}
-	}
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    
+                    ws.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~Websocket() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+    }
 }

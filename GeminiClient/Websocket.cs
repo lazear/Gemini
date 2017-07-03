@@ -13,10 +13,18 @@ namespace Gemini
 	/// </summary>
 	public class Websocket : IDisposable
 	{
-		public int BufferSize = 8192;
+		/// <summary>
+		/// 16kB buffer
+		/// </summary>
+		private int BufferSize = 16384;
 		private ClientWebSocket ws;
 		private string url;
 
+		/// <summary>
+		/// Delegate for receiving data from the websocket
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="state"></param>
 		public delegate void ReceiveCallback(string data, object state);
 		private ReceiveCallback rc;
 		private object state;
@@ -72,7 +80,7 @@ namespace Gemini
 				overflow += Encoding.UTF8.GetString(buffer.TakeWhile((x) => x != 0).ToArray());
 
 				rc?.Invoke(overflow, state);
-				overflow = String.Empty;
+				overflow = "";
 			}
             rc?.Invoke("Disconnected", null);
 		}

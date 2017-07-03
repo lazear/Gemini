@@ -63,6 +63,16 @@ namespace Gemini
 		{
 			return (long)(dt - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds;
 		}
+
+		/// <summary>
+		/// Converts a DateTime object to epoch time
+		/// </summary>
+		/// <param name="dt"></param>
+		/// <returns></returns>
+		public static long ToTimestampMs(this DateTime dt)
+		{
+			return (long)(dt - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
+		}
 	}
 
 	/// <summary>

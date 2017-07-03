@@ -716,7 +716,7 @@ namespace Gemini.Contracts
 		/// <summary>
 		/// Data about the filled order
 		/// </summary>
-		[DataMember(Name = "fill")]
+		[DataMember(Name = "fill", IsRequired = false)]
 		public OrderEventFillData Fill;
 	}
 

@@ -1,7 +1,7 @@
 # Gemini
-_Open source C# Wrapper Library for the Gemini Cryptocurrency Exchange REST API._
+Open source C# Wrapper Library for the Gemini Cryptocurrency Exchange REST API.
 
-*Donate 12fj5Stp31SrYjtcN9T1jnXPGKUsEF92KD*
+Donate BTC: 12fj5Stp31SrYjtcN9T1jnXPGKUsEF92KD
 
 Examples:
 
@@ -26,3 +26,5 @@ var orders = GeminiClient.GetActiveOrders();
 foreach(OrderStatus order in orders)
   Console.WriteLine(order.IsLive);
 ```
+
+More indepth examples can be found in the Examples directory

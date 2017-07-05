@@ -1,4 +1,28 @@
-﻿using System;
+﻿/*
+MIT License
+
+Copyright (c) Michael Lazear 2017 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+using System;
 using System.Text;
 using System.Net.Http;
 using System.IO;
@@ -36,14 +60,10 @@ namespace Gemini
 	/// </summary>
 	public class Wallet
 	{
-
-		public delegate void WalletEvent(object sender, EventArgs e);
 		/// <summary>
 		/// Triggered when a new Wallet is loaded
 		/// </summary>
-		/// <param name="w"></param>
-		/// <param name="e"></param>
-		public event WalletEvent OnChange;
+		public event EventHandler OnChange;
 
 		/// <summary>
 		/// In-memory representation of the Wallet file
@@ -97,6 +117,7 @@ namespace Gemini
 		/// <summary>
 		/// Create a new Wallet file, storing the API Key and Secret as AES-256 encrypted XML
 		/// </summary>
+        /// <param name="keys">GeminiWallet containing API key pair</param>
 		/// <param name="filename">Filename for Wallet file</param>
 		/// <param name="password">Password to use for AES-256 encryption</param>
 		public void Create(GeminiWallet keys, string filename, string password)
@@ -287,13 +308,13 @@ namespace Gemini
 		/// Request account balances
 		/// </summary>
 		/// <returns></returns>
-		public static BalanceRequest[] GetBalances()
+		public static BalanceResponse[] GetBalances()
 		{
 			Requests re = new Requests();
 			Wallet.Authenticate(re, new PrivateRequest { Nonce = 2, Request = "/v1/balances" });
 			var result = re.Post().Result;
 			if (result.IsSuccessStatusCode)
-				return result.Json<BalanceRequest[]>();
+				return result.Json<BalanceResponse[]>();
 			HandleError(result);
 			return null;
 		}

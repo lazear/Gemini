@@ -1,4 +1,28 @@
-﻿using System;
+﻿/*
+MIT License
+
+Copyright (c) Michael Lazear 2017 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
@@ -11,8 +35,14 @@ namespace Gemini.Contracts
 	[DataContract]
 	public class PrivateRequest
 	{
+        /// <summary>
+        /// API endpoint string
+        /// </summary>
 		[DataMember(Name = "request")]
 		public string Request;
+        /// <summary>
+        /// Integer value that must increase between API calls
+        /// </summary>
 		[DataMember(Name = "nonce")]
 		public int Nonce;
 	}
@@ -67,13 +97,25 @@ namespace Gemini.Contracts
 		public string Broken;
 	}
 
+    /// <summary>
+    /// Volume object 
+    /// </summary>
 	[DataContract]
 	public class Volume
 	{
+        /// <summary>
+        /// Supported currency
+        /// </summary>
 		[DataMember(Order = 0)]
 		public decimal Currency;
+        /// <summary>
+        /// Value in USD
+        /// </summary>
 		[DataMember(Name = "USD")]
 		public decimal USD;
+        /// <summary>
+        /// Epoch time in seconds
+        /// </summary>
 		[DataMember(Name = "timestamp")]
 		public string timestamp;
 	}
@@ -85,12 +127,24 @@ namespace Gemini.Contracts
 	[DataContract]
 	public class Ticker
 	{
+        /// <summary>
+        /// Highest bid price
+        /// </summary>
 		[DataMember(Name = "bid")]
 		public decimal Bid;
+        /// <summary>
+        /// Lowest ask price
+        /// </summary>
 		[DataMember(Name = "ask")]
 		public decimal Ask;
+        /// <summary>
+        /// Price of last trade
+        /// </summary>
 		[DataMember(Name = "last")]
 		public decimal Last;
+        /// <summary>
+        /// 24hr volume
+        /// </summary>
 		[DataMember(Name = "volume")]
 		public Volume Volume;
 
@@ -102,8 +156,14 @@ namespace Gemini.Contracts
 	[DataContract]
 	public class OrderBookEntry
 	{
+        /// <summary>
+        /// Price
+        /// </summary>
 		[DataMember(Name = "price")]
 		public float Price;
+        /// <summary>
+        /// Amount
+        /// </summary>
 		[DataMember(Name = "amount")]
 		public float Amount;
 	}
@@ -114,8 +174,14 @@ namespace Gemini.Contracts
 	[DataContract]
 	public class OrderBook
 	{
+        /// <summary>
+        /// Array of all bids on the order book
+        /// </summary>
 		[DataMember(Name = "bids")]
 		public OrderBookEntry[] Bids;
+        /// <summary>
+        /// Array of all asks on the order book
+        /// </summary>
 		[DataMember(Name = "asks")]
 		public OrderBookEntry[] Asks;
 	}
@@ -124,14 +190,26 @@ namespace Gemini.Contracts
 	/// Request the available balances of the account
 	/// </summary>
 	[DataContract]
-	public class BalanceRequest : PrivateRequest
+	public class BalanceResponse
 	{
+        /// <summary>
+        /// Currency: "BTC", "ETH", "USD"
+        /// </summary>
 		[DataMember(Name = "currency")]
 		public string Currency;
+        /// <summary>
+        /// Total quantity of the currency held
+        /// </summary>
 		[DataMember(Name = "amount")]
 		public decimal Amount;
+        /// <summary>
+        /// Quantity available for trading
+        /// </summary>
 		[DataMember(Name = "available")]
 		public decimal Available;
+        /// <summary>
+        /// Quantity available for withdrawal
+        /// </summary>
 		[DataMember(Name = "availableForWithdrawal")]
 		public decimal AvailableForWithdrawal;
 	}
@@ -147,7 +225,6 @@ namespace Gemini.Contracts
 		/// </summary>
 		[DataMember(Name = "address")]
 		public string Address;
-
 		/// <summary>
 		/// Quoted decimal amount to withdraw
 		/// </summary>
@@ -266,6 +343,9 @@ namespace Gemini.Contracts
 	[DataContract]
 	public class OrderStatusRequest : PrivateRequest
 	{
+        /// <summary>
+        /// Server side order ID
+        /// </summary>
 		[DataMember(Name = "order_id")]
 		public int OrderID;
 	}
@@ -644,19 +724,16 @@ namespace Gemini.Contracts
 		/// </summary>
 		[DataMember(Name = "type")]
 		public string Type;
-
 		/// <summary>
 		/// Gemini adds a timestamp so if you get disconnected, you may contact Gemini support with the timestamp of the last heartbeat you received.
 		/// </summary>
 		[DataMember(Name = "timestampms")]
 		public long TimestampMs;
-
 		/// <summary>
 		/// Gemini adds a monotonically incrementing sequence to make it easy to tell if you've missed a heartbeat.
 		/// </summary>
 		[DataMember(Name = "sequence")]
 		public int Sequence;
-
 		/// <summary>
 		/// Gemini adds a trace id to each WebSocket request to make troubleshooting
 		/// </summary>
@@ -675,31 +752,26 @@ namespace Gemini.Contracts
 		/// </summary>
 		[DataMember(Name = "trade_id")]
 		public string TradeID;
-
 		/// <summary>
 		/// whether this side of the trade represents Maker, Taker, or Auction liquidity
 		/// </summary>
 		[DataMember(Name = "liquidity")]
 		public string Liquidity;
-
 		/// <summary>
 		/// the price the trade filled at
 		/// </summary>
 		[DataMember(Name = "price")]
-		public decimal Price;
-
+	    public decimal Price;
 		/// <summary>
 		/// the amount of the trade fill
 		/// </summary>
 		[DataMember(Name = "amount")]
 		public decimal Amount;
-
 		/// <summary>
 		/// the fee associated with this side of the trade
 		/// </summary>
 		[DataMember(Name = "fee")]
 		public decimal Fee;
-
 		/// <summary>
 		/// the three-letter code of the currency associated with the fee
 		/// </summary>
@@ -749,45 +821,37 @@ namespace Gemini.Contracts
 		/// </summary>
 		[DataMember(Name = "type")]
 		public string Type;
-
 		/// <summary>
 		/// The price this trade executed at.
 		/// </summary>
 		[DataMember(Name = "price")]
 		public decimal Price;
-
 		/// <summary>
 		/// The amount traded.
 		/// </summary>
 		[DataMember(Name = "amount")]
 		public decimal Amount;
-
 		/// <summary>
 		/// The side of the book the maker of the trade placed their order on, of if the trade occurred in an auction. Either bid, ask, or auction.
 		/// </summary>
 		[DataMember(Name = "makerSide")]
 		public string MakerSide;
-
 		/* For CHANGE events */
-
 		/// <summary>
 		/// Either bid or ask.
 		/// </summary>
 		[DataMember(Name = "side")]
 		public string Side;
-
 		/// <summary>
 		/// Either place, trade, cancel, or initial, to indicate why the change has occurred. initial is for the initial response message, which will show the entire existing state of the order book.
 		/// </summary>
 		[DataMember(Name = "reason")]
 		public string Reason;
-
 		/// <summary>
 		/// The quantity remaining at that price level after this change occurred. May be zero if all orders at this price level have been filled or canceled.
 		/// </summary>
 		[DataMember(Name = "remaining")]
 		public decimal Remaining;
-
 		/// <summary>
 		/// The quantity changed. May be negative, if an order is filled or canceled. For initial messages, delta will equal remaining.
 		/// </summary>
@@ -795,6 +859,9 @@ namespace Gemini.Contracts
 		public decimal Delta;
 	}
 
+    /// <summary>
+    /// Response object from market data Websocket 
+    /// </summary>
 	[DataContract]
 	public class MarketData
 	{
@@ -808,7 +875,6 @@ namespace Gemini.Contracts
 		/// </summary>
 		[DataMember(Name = "eventId")]
 		public int Eventid;
-
 		/// <summary>
 		/// Either a change to the order book, or the indication that a trade has occurred.
 		/// </summary>
@@ -823,18 +889,34 @@ namespace Gemini.Contracts
 	[DataContract]
 	public class ErrorCode
 	{
+        /// <summary>
+        /// "Error"
+        /// </summary>
 		[DataMember(Name = "result")]
 		public string Result;
+        /// <summary>
+        /// Reason for the error
+        /// </summary>
 		[DataMember(Name = "reason")]
 		public string Reason;
+        /// <summary>
+        /// Human readable message
+        /// </summary>
 		[DataMember(Name = "message")]
 		public string Message;
 	}
 
+    /// <summary>
+    /// Wrapper around Json serializer
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
 	public class Serializer<T> where T : class
 	{
 		private DataContractJsonSerializer json;
 
+        /// <summary>
+        /// Initialize new serializer
+        /// </summary>
 		public Serializer()
 		{
 			if (!typeof(T).IsDefined(typeof(DataContractAttribute), true))
@@ -842,6 +924,11 @@ namespace Gemini.Contracts
 			json = new DataContractJsonSerializer(typeof(T));
 		}
 
+        /// <summary>
+        /// Write an object to a string
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
 		public string Write(T obj)
 		{
 			MemoryStream stream = new MemoryStream();
@@ -850,6 +937,11 @@ namespace Gemini.Contracts
 			return new StreamReader(stream).ReadToEnd();
 		}
 
+        /// <summary>
+        /// Read an object from a stream
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
 		public T Read(Stream s)
 		{
 			return json.ReadObject(s) as T;

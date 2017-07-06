@@ -73,19 +73,9 @@ namespace Gemini
 		/// <returns></returns>
 		public async Task Connect()
 		{
-			try
-			{
-				await ws.ConnectAsync(new Uri(url), CancellationToken.None);
-				await Receive();
-			}
-			catch (Exception e)
-			{
-				rc("Exception", e);
-			}
-			finally
-			{
-				ws.Dispose();
-			}
+			await ws.ConnectAsync(new Uri(url), CancellationToken.None);
+			await Receive();
+			ws.Dispose();
 		}
 
 		private async Task Receive()

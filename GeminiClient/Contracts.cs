@@ -107,12 +107,12 @@ namespace Gemini.Contracts
         /// Supported currency
         /// </summary>
 		[DataMember(Order = 0)]
-		public decimal Currency;
+		public decimal Currency1;
         /// <summary>
         /// Value in USD
         /// </summary>
-		[DataMember(Name = "USD")]
-		public decimal USD;
+		[DataMember(Order = 1)]
+		public decimal Currency2;
         /// <summary>
         /// Epoch time in seconds
         /// </summary>

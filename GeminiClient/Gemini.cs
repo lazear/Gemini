@@ -129,7 +129,6 @@ namespace Gemini
 				stream.Seek(0, SeekOrigin.Begin);
 				Cryptography.AesEncryption(stream, filename, password);
 				_filename = filename;
-				OnChange?.Invoke(this, null);
 			}
 		}
 
@@ -264,7 +263,7 @@ namespace Gemini
 		private static void HandleError(HttpResponseMessage message)
 		{
 			ErrorCode error = new Serializer<ErrorCode>().Read(message.Content.ReadAsStreamAsync().Result);
-			Handler(error.Reason, error.Message);
+			Handler?.Invoke(error.Reason, error.Message);
 		}
 
 		/* 
@@ -287,15 +286,61 @@ namespace Gemini
 		}
 
 		/// <summary>
+		/// Get the ticker object for currency
+		/// </summary>
+		/// <param name="currency">Valid strings can be queryed by /v1/symbols API</param>
+		/// <returns>Ticker object</returns>
+		public static Ticker GetTicker(string currency)
+		{
+			Requests re = new Requests(Wallet.Url() + "/v1/pubticker/" + currency.ToLower());
+			var result = re.Get().Result;
+			// Have to do some regex trickery to parse out the json Volume object
+			if (result.IsSuccessStatusCode)
+			{
+				var ticker = result.Json<Ticker>();
+				var res = result.Content.ReadAsStringAsync().Result;
+				var pattern = "\"{0}\":\"{1}\"";
+				var p2 = @"(?:\d*\.)\d+";
+
+				var c1 = System.Text.RegularExpressions.Regex.Match(res,
+					String.Format(pattern, currency.Substring(0, 3).ToUpper(), p2));
+				var c2 = System.Text.RegularExpressions.Regex.Match(res,
+					String.Format(pattern, currency.Substring(3, 3).ToUpper(), p2));
+
+				ticker.Volume.Currency1 = decimal.Parse(c1.Value.Split(':')[1].Trim('"'));
+				ticker.Volume.Currency2 = decimal.Parse(c2.Value.Split(':')[1].Trim('"'));
+				return ticker;
+			}
+				
+			HandleError(result);
+			return null;
+		}
+
+		/// <summary>
 		/// Get array of valid exchange symbols
 		/// </summary>
 		/// <returns></returns>
-		public string[] GetSymbols()
+		public static string[] GetSymbols()
 		{
 			Requests re = new Requests(Wallet.Url() + "/v1/symbols");
 			var result = re.Get().Result;
 			if (result.IsSuccessStatusCode)
 				return result.Json<string[]>();
+			HandleError(result);
+			return null;
+		}
+
+		/// <summary>
+		/// This will return the current order book, as two arrays, one of bids, and one of asks
+		/// </summary>
+		/// <param name="symbol"></param>
+		/// <returns></returns>
+		public static OrderBook GetOrderBook(string symbol)
+		{
+			Requests re = new Requests(Wallet.Url() + "/v1/book/" + symbol);
+			var result = re.Get().Result;
+			if (result.IsSuccessStatusCode)
+				return result.Json<OrderBook>();
 			HandleError(result);
 			return null;
 		}

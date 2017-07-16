@@ -49,7 +49,7 @@ namespace Gemini
 		/// <param name="data"></param>
 		/// <param name="state"></param>
 		public delegate void ReceiveCallback(string data, object state);
-		private ReceiveCallback rc;
+		public ReceiveCallback rc;
 		private object state;
 
 		/// <summary>
@@ -68,13 +68,17 @@ namespace Gemini
 		}
 
 		/// <summary>
-		/// Connect to the websocket and start receiving data
+		/// Connect to the websocket and start receiving data. Should not return while the 
+		/// websocket is connected
 		/// </summary>
 		/// <returns></returns>
 		public async Task Connect()
 		{
-			await ws.ConnectAsync(new Uri(url), CancellationToken.None);
-			await Receive();
+			//while(true)
+			{
+				await ws.ConnectAsync(new Uri(url), CancellationToken.None);
+				await Receive();
+			}
 			ws.Dispose();
 		}
 
@@ -121,8 +125,8 @@ namespace Gemini
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
-                    
+					// TODO: dispose managed state (managed objects).
+					rc = null;
                     ws.Dispose();
                 }
 

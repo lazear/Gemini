@@ -29,3 +29,8 @@ foreach(OrderStatus order in orders)
 ```
 
 More indepth examples can be found in the Examples directory
+
+### Compiling for non-Windows hosts
+1. Download the [.NET Core 2.0 SDK](https://www.microsoft.com/net/download/core)
+2. Clone the [.NET Core branch](https://github.com/lazear/Gemini/tree/dotnetcore)
+3. Run `dotnet build`

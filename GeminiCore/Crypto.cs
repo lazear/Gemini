@@ -88,7 +88,7 @@ namespace Gemini
                 AES.Key = key.GetBytes(AES.KeySize / 8);
                 AES.IV = key.GetBytes(AES.BlockSize / 8);
 
-                AES.Mode = CipherMode.CFB;
+                //AES.Mode = CipherMode.CFB;
 
                 encrypted.Write(salt, 0, salt.Length);
 
@@ -122,7 +122,7 @@ namespace Gemini
                 AES.Key = key.GetBytes(AES.KeySize / 8);
                 AES.IV = key.GetBytes(AES.BlockSize / 8);
 
-                AES.Mode = CipherMode.CFB;
+//                AES.Mode = CipherMode.CFB;
 
                 var cs = new CryptoStream(input, AES.CreateDecryptor(), CryptoStreamMode.Read);
                 var buffer = new byte[4096];

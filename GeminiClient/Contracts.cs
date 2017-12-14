@@ -347,7 +347,7 @@ namespace Gemini.Contracts
         /// Server side order ID
         /// </summary>
 		[DataMember(Name = "order_id")]
-		public int OrderID;
+		public long OrderID;
 	}
 
 	/// <summary>

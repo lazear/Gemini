@@ -44,7 +44,7 @@ namespace Gemini.Contracts
         /// Integer value that must increase between API calls
         /// </summary>
 		[DataMember(Name = "nonce")]
-        public int Nonce;
+        public long Nonce;
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace Gemini.Contracts
         /// The trade ID number
         /// </summary>
         [DataMember(Name = "tid")]
-        public int TradeId;
+        public long TradeId;
         /// <summary>
         /// The price the trade was executed at
         /// </summary>
@@ -347,7 +347,7 @@ namespace Gemini.Contracts
         /// Server side order ID
         /// </summary>
 		[DataMember(Name = "order_id")]
-        public int OrderID;
+        public long OrderID;
     }
 
     /// <summary>
@@ -520,7 +520,7 @@ namespace Gemini.Contracts
         /// Uniqued identifier for the trade
         /// </summary>
         [DataMember(Name = "tid")]
-        public int TradeId;
+        public long TradeId;
         /// <summary>
         /// The order that this trade executed against
         /// </summary>
@@ -686,7 +686,7 @@ namespace Gemini.Contracts
         /// The account id associated with the API session key you supplied in your X-GEMINI-APIKEY header. See Private API Invocation for more details.
         /// </summary>
         [DataMember(Name = "accountId")]
-        public int AccountID;
+        public long AccountID;
 
         /// <summary>
         /// The id associated with this websocket subscription; the component after the last dash is a request trace id that will be echoed back in the heartbeat traceId field.
@@ -733,7 +733,7 @@ namespace Gemini.Contracts
         /// Gemini adds a monotonically incrementing sequence to make it easy to tell if you've missed a heartbeat.
         /// </summary>
         [DataMember(Name = "sequence")]
-        public int Sequence;
+        public long Sequence;
         /// <summary>
         /// Gemini adds a trace id to each WebSocket request to make troubleshooting
         /// </summary>
@@ -874,7 +874,7 @@ namespace Gemini.Contracts
         /// A monotonically increasing sequence number indicating when this change occurred. These numbers are persistent and consistent between market data connections.
         /// </summary>
         [DataMember(Name = "eventId")]
-        public int Eventid;
+        public long Eventid;
         /// <summary>
         /// Either a change to the order book, or the indication that a trade has occurred.
         /// </summary>
